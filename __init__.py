@@ -26,6 +26,13 @@ def meteo():
         temp_day_value = list_element.get('temp', {}).get('day') - 273.15 # Conversion de Kelvin en °c 
         results.append({'Jour': dt_value, 'temp': temp_day_value})
     return jsonify(results=results)
+
+# Création des données pour l'histogramme
+    data_for_histogram = [['Jour', 'Température']]
+    for entry in results:
+        data_for_histogram.append([entry['Jour'], entry['temp']])
+
+    return jsonify( histogram_data=data_for_histogram)
   
 if __name__ == "__main__":
   app.run(debug=True)
