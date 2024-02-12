@@ -4,6 +4,7 @@ from flask import json
 from datetime import datetime
 from urllib.request import urlopen
 import sqlite3
+#import requests
                                                                                                                                        
 app = Flask(__name__)                                                                                                                  
                                                                                                                                        
@@ -27,6 +28,19 @@ def meteo():
         results.append({'Jour': dt_value, 'temp': temp_day_value})
     return jsonify(results=results)
 
+@app.route('/histogramme')
+def histogramme():
+    # Récupérer les données de l'API
+    url = 'https://samples.openweathermap.org/data/2.5/forecast?lat=0&lon=0&appid=xxx'  
+    response = urlopen(url)
+    raw_content = response.read()
+    json_content = json.loads(raw_content.decode('utf-8'))
+    
+    # Extraction des températures
+    temperatures = [data['main']['temp'] for data in json_content['list']]
+    
+    # Passer les données à la template HTML
+    return render_template('histogramme.html', temperatures=temperatures)
 
   
 if __name__ == "__main__":
