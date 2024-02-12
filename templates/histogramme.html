@@ -3,31 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Histogramme des températures</title>
+    <title>Histogramme</title>
+    <!-- Inclure les dépendances de Google Charts -->
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript">
         google.charts.load('current', {'packages':['corechart']});
         google.charts.setOnLoadCallback(drawChart);
 
         function drawChart() {
-            var data = google.visualization.arrayToDataTable([
-                ['Jour', 'Température'],
-                // Insérer les données de température ici
-            ]);
-
+            var temperatures = {{ temperatures | tojson }};
+            var data = new google.visualization.DataTable();
+            data.addColumn('string', 'Température');
+            data.addColumn('number', 'Valeur');
+            for (var i = 0; i < temperatures.length; i++) {
+                data.addRow(['Jour ' + (i+1), temperatures[i]]);
+            }
             var options = {
                 title: 'Histogramme des températures',
                 legend: { position: 'none' },
-                // Autres options de personnalisation du graphique
+                width: 800,
+                height: 400
             };
-
-            var chart = new google.visualization.Histogram(document.getElementById('chart_div'));
+            var chart = new google.visualization.Histogram(document.getElementById('histogramme'));
             chart.draw(data, options);
         }
     </script>
 </head>
 <body>
     <h2>Histogramme des températures</h2>
-    <div id="chart_div" style="width: 900px; height: 500px;"></div>
+    <div id="histogramme"></div>
 </body>
 </html>
