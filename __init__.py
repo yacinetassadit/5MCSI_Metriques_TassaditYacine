@@ -15,7 +15,7 @@ def hello_world():
 def contact():
     return render_template("Contact.html")
 
-@app.route('/paris/')
+@app.route('/paris/') #problème de token donc ça ne fonctionne pas!
 def meteo():
     response = urlopen('https://api.openweathermap.org/data/2.5/forecast/daily?q=Paris,fr&cnt=16&appid=bd5e378503939ddaee76f12ad7a97608')
     raw_content = response.read()
@@ -27,12 +27,7 @@ def meteo():
         results.append({'Jour': dt_value, 'temp': temp_day_value})
     return jsonify(results=results)
 
-# Création des données pour l'histogramme
-    data_for_histogram = [['Jour', 'Température']]
-    for entry in results:
-        data_for_histogram.append([entry['Jour'], entry['temp']])
 
-    return jsonify( histogram_data=data_for_histogram)
   
 if __name__ == "__main__":
   app.run(debug=True)
