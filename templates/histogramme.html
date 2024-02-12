@@ -20,17 +20,25 @@
             var data = new google.visualization.DataTable();
             data.addColumn('string', 'Date');
             data.addColumn('number', 'Température (°C)');
-            // Insérez ici les données récupérées de votre API /paris/
-
-            var options = {
-                title: 'Températures de Paris pour les 16 prochains jours',
-                legend: { position: 'none' },
-                bars: 'vertical',
-                vAxis: { format: 'decimal' }
-            };
-
-            var chart = new google.visualization.ColumnChart(document.getElementById('histogramme_div'));
-            chart.draw(data, options);
+            
+            // Récupérer les données de l'API /paris/
+            fetch('/paris/')
+                .then(response => response.json())
+                .then(data => {
+                    data.results.forEach(entry => {
+                        var date = new Date(entry.Jour * 1000);
+                        data.addRow([date.toLocaleDateString(), entry.temp]);
+                    });
+                    // Créer l'histogramme avec les données récupérées
+                    var options = {
+                        title: 'Températures de Paris pour les 16 prochains jours',
+                        legend: { position: 'none' },
+                        bars: 'vertical',
+                        vAxis: { format: 'decimal' }
+                    };
+                    var chart = new google.visualization.ColumnChart(document.getElementById('histogramme_div'));
+                    chart.draw(data, options);
+                });
         }
     </script>
 </body>
