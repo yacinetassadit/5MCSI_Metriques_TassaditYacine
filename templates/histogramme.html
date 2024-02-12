@@ -13,33 +13,36 @@
 
     <!-- Script pour générer l'histogramme -->
     <script>
-        google.charts.load('current', { packages: ['corechart'] });
-        google.charts.setOnLoadCallback(drawHistogramme);
+       // Récupérer les données de l'API OpenWeatherMap
+fetch('https://samples.openweathermap.org/data/2.5/forecast?lat=0&lon=0&appid=xxx')
+    .then(response => response.json())
+    .then(data => {
+        // Extraire les températures de la réponse JSON
+        const temperatures = data.list.map(item => item.main.temp);
         
-        function drawHistogramme() {
-            var data = new google.visualization.DataTable();
-            data.addColumn('string', 'Date');
-            data.addColumn('number', 'Température (°C)');
-            
-            // Récupérer les données de l'API /paris/
-            fetch('/paris/')
-                .then(response => response.json())
-                .then(data => {
-                    data.results.forEach(entry => {
-                        var date = new Date(entry.Jour * 1000);
-                        data.addRow([date.toLocaleDateString(), entry.temp]);
-                    });
-                    // Créer l'histogramme avec les données récupérées
-                    var options = {
-                        title: 'Températures de Paris pour les 16 prochains jours',
-                        legend: { position: 'none' },
-                        bars: 'vertical',
-                        vAxis: { format: 'decimal' }
-                    };
-                    var chart = new google.visualization.ColumnChart(document.getElementById('histogramme_div'));
-                    chart.draw(data, options);
-                });
+        // Utiliser les données pour créer l'histogramme
+        google.charts.load('current', { packages: ['corechart'] });
+        google.charts.setOnLoadCallback(drawChart);
+        
+        function drawChart() {
+            var data = google.visualization.arrayToDataTable([
+                ['Température', 'Nombre de jours'],
+                // Insérer ici les données de température
+                // Exemple : ['10°C', 5], ['15°C', 8], ...
+            ]);
+
+            var options = {
+                title: 'Histogramme des températures',
+                legend: { position: 'none' },
+                hAxis: { title: 'Température' },
+                vAxis: { title: 'Nombre de jours' }
+            };
+
+            var chart = new google.visualization.Histogram(document.getElementById('histogramme_div'));
+            chart.draw(data, options);
         }
+    });
+
     </script>
 </body>
 </html>
