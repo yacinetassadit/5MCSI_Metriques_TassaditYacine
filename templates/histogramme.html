@@ -4,33 +4,34 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Histogramme</title>
-    <!-- Inclure les dépendances de Google Charts -->
+    <!-- Inclure les scripts nécessaires pour les graphiques Google -->
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <script type="text/javascript">
-        google.charts.load('current', {'packages':['corechart']});
-        google.charts.setOnLoadCallback(drawChart);
+</head>
+<body>
+    <h2>Histogramme des températures de Paris</h2>
+    <div id="histogramme_div"></div>
 
-        function drawChart() {
-            var temperatures = {{ temperatures | tojson }};
+    <!-- Script pour générer l'histogramme -->
+    <script>
+        google.charts.load('current', { packages: ['corechart'] });
+        google.charts.setOnLoadCallback(drawHistogramme);
+        
+        function drawHistogramme() {
             var data = new google.visualization.DataTable();
-            data.addColumn('string', 'Température');
-            data.addColumn('number', 'Valeur');
-            for (var i = 0; i < temperatures.length; i++) {
-                data.addRow(['Jour ' + (i+1), temperatures[i]]);
-            }
+            data.addColumn('string', 'Date');
+            data.addColumn('number', 'Température (°C)');
+            // Insérez ici les données récupérées de votre API /paris/
+
             var options = {
-                title: 'Histogramme des températures',
+                title: 'Températures de Paris pour les 16 prochains jours',
                 legend: { position: 'none' },
-                width: 800,
-                height: 400
+                bars: 'vertical',
+                vAxis: { format: 'decimal' }
             };
-            var chart = new google.visualization.Histogram(document.getElementById('histogramme'));
+
+            var chart = new google.visualization.ColumnChart(document.getElementById('histogramme_div'));
             chart.draw(data, options);
         }
     </script>
-</head>
-<body>
-    <h2>Histogramme des températures</h2>
-    <div id="histogramme"></div>
 </body>
 </html>
